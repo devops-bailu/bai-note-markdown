@@ -75,11 +75,15 @@ docker开源时候的 slogen 就是`Once building run anywhere`，所以 dock
 
 容器镜像的构建是通过dockerfile来完成的，到目前为止，dockerfile已经成为了容器镜像构建的标准；dockerfile中每次执行的命令，对于容器镜像来说就是一层（layer），附加到基础镜像之上
 
+###### 如何构建操作系统镜像
+
+![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-docker基础-20220413001549.png)
+
 #### 容器镜像的分层
 
 ![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com//cloudnactive-docker基础-202204121617893.png)
 
-- 通过操作进行叠加
+- 通过不断操作进行叠加
 - 不是所有的操作都会增加镜像的体积
 
 #### Docker镜像分层技术
@@ -91,3 +95,41 @@ docker开源时候的 slogen 就是`Once building run anywhere`，所以 dock
 - sha256 散列
 
 ![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com//cloudnactive-docker基础-202204121708990.png)
+
+容器镜像就是通过一个配置文件，通过每一层的哈希值将每一层组织起来的，哈希值分别对应到了不同的layer，哈希值的产生都使用过sha256进行散列，以上是可以通过保存容器镜像后，解压，然后进行查看
+
+#### Docker容器
+
+利用 Linux 所提供的能力来完成进程的组织，本质上，每一个容器就是一个进程
+
+- cgroup
+
+​		主要是控制资源的消耗，或者限制可用资源大小
+
+- namespace
+
+​		主要是进行进程资源隔离，主要有以下几种 
+
+| namespace名称 |  系统调用参数   |                             含义                             |
+| :-----------: | :-------------: | :----------------------------------------------------------: |
+|     Mount     |   CLONE_NEWNS   |                          隔离挂载点                          |
+|      PID      |  CLONE_NEWPID   |                           进程编号                           |
+|    Network    |  CLONE_NEWNET   |                    网络设备、堆栈、端口等                    |
+|      IPC      |  CLONE_NEWIPC   |                    系统IPC、POSIX消息队列                    |
+|      UTS      |  CLONE_NEWUTS   | 系统主机名和NIS（Network Information Service）和主机名（有时候称为域名） |
+|     User      |  CLONE_NEWUSER  |                          用户和组ID                          |
+|    Cgroup     | CLONE_NEWCGROUP |                         Cgroup根目录                         |
+
+
+
+## 容器化技术和工具
+
+#### 容器化技术
+
+- chroot
+- Linux vserver / openVZ
+- namespace / cgroup
+
+#### 容器化工具
+
+![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-docker基础-20220413003541.png)
