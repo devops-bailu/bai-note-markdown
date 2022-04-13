@@ -22,11 +22,12 @@ Docker官方网站：`https://www.docker.com/`
 ###### Docker的优势和劣势：
 
 - 轻量级，降低资源损耗
-- 共享内核，隔离性和安全性存在一定缺陷，docker Engine 本质上来说是一个服务，可能会存在攻击通过pod和docker Engine 进而攻击到物理机
+- 共享内核，具备一定的隔离性，但是隔离性和安全性存在一定缺陷，docker Engine 本质上来说是一个服务，可能会存在攻击通过pod和docker Engine 进而攻击到物理机
+- 资源管理
 
 ###### Docker和虚拟机的对比
 
-
+![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-docker/docker-base-202204131538911.jpg)
 
 |    特性    |      虚拟机      |       容器       |
 | :--------: | :--------------: | :--------------: |
@@ -133,3 +134,75 @@ docker开源时候的 slogen 就是`Once building run anywhere`，所以 dock
 #### 容器化工具
 
 ![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-docker/docker-base-202204131309378.png)
+
+## Docker 网络架构及其原理
+
+![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-docker/docker-base-202204131446684.png)
+
+- Bridge
+  - docker0
+  - iptables
+  - 自定义bridge网络：可以自定义gateway、subnet、而且还有内置DNS（使用一个bridge网络可以通过容器name互访）
+- Host
+- None
+- container
+
+#### Bridge 网络
+
+可以按需自定义网络地址范围，docker
+
+![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-docker/docker-base-202204131457973.png)
+
+![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-docker/docker-base-202204131457925.png)
+
+#### Host 网络
+
+共享主机的namespace
+
+![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-docker/docker-base-202204131532848.png)
+
+#### None 网络
+
+不分配网络
+
+![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-docker/docker-base-202204131535751.png)
+
+#### container 网络
+
+共享容器namespace，可以通过localhost来访问，与宿主机是隔离的，但是容器之间是可以互联的
+
+![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-docker/docker-base-202204131557872.png)
+
+![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-docker/docker-base-202204131558432.png)
+
+---
+
+**以上就延伸出了k8s的网络，在k8s中最小的调度单元为pod，一个pod中可以存在多个container，container之间就是通过container network进行交互的，pod创建时候，首先会创建一个pause的container，通过pause分配一个network的namespace，分配完成以后，其他的container都加入到这个network namespace中，这样其他的container都可以共享这个network namespace 也即共享网络堆栈，并且彼此之间通过localhost进行访问**
+
+---
+
+
+
+## 基于 Docker 的业务架构设计
+
+- 服务注册/发现
+
+  host模式以及docker内置的DNS
+
+- 服务通信
+
+  容器内网络和容器间网络通信
+
+- 应用交付
+
+  CI/CD
+
+- 故障恢复
+
+  restart policy等
+
+#### 基于 Docker 的业务架构存在的问题
+
+- 缺少全局编排工具
+- 随着集群规模的增加，整体会变的非常复杂
+- 故障转移故障恢复能力不足
