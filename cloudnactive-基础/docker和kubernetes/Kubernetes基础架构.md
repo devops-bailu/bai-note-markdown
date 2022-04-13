@@ -79,24 +79,45 @@ Kubernetes 为你提供：
 - 扩容/缩容
 - 故障自愈
 - 弹性
-- 云原生趋势
-- 一致性
-
-
-
-
-
-
+- 云原生技术趋势
+- 一致性/不锁定性：CNCF推出了一个一致性校验，无论是托管的，还是自建的k8s集群都可以去进行一致性校验，具备比较多的判定规则，一旦通过判定，你在这个集群上部署的服务，都可以无缝的直接迁移到其他k8s集群上
 
 ## K8s 整体架构和工作原理
 
+#### K8s 架构
 
+![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-k8s/k8s-base/k8s-base-20220413214447.png)
 
+###### 1. APIServer（kube-apiserver ）
 
+负责处理来自用户的请求，其主要作用就是对外提供RESTful接口，包括查看集群状态和资源状态的读请求，以及改变集群状态和资源状态的写请求等等，也是唯一一个与etcd通信的组件
 
+###### 2. Controller（kube-controller-manager ：控制器： 管理容器，监控容器）
 
+管理器运行了一系列的控制器进程，这些进程会按照用户的期望状态在后台不断地调节整个集群中的对象
 
+当服务状态发生了改变，控制器就会发现改变并且向目标状态迁移
 
+是一系列控制器的集合，通过apiserver监控整个集群还有资源的状态，并且确保集群处于预期的工作状态
+
+- Node Controller：节点控制器
+
+- Deployment Controller：pod控制器
+- Service Controller：服务控制器
+- Volume Controller：存储卷控制器
+- Endpoint Controller：接入点控制器
+- Garbage Controller：垃圾回收控制器
+- Namespace Controller：名称空间控制器
+- Job Controller：任务控制器
+- Resource quta Controller：资源配额控制器
+
+###### 3. Scheduler（kube-scheduler）
+
+调度器其实为kubernetes中运行的Pod选择部署的Worker节点
+它会根据用户的需要选择最能满足请求的节点来运行Pod，它会在每次需要调度Pod时执行
+主要功能是接收调度pod到适合的节点上
+预选策略( predict )
+优选策略( priorities )
 
 ## K8s 中服务发现和应用
 
