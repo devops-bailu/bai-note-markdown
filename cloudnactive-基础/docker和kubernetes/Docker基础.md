@@ -4,11 +4,11 @@
 
 Docker官方网站：`https://www.docker.com/`
 
-![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com//cloudnactive-docker基础-202204121257038.png)
+![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-docker/docker-base-202204131300227.png)
 
-![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com//cloudnactive-docker基础-202204121301887.png)
+![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-docker/docker-base-202204131302212.png)
 
-![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com//cloudnactive-docker基础-202204121302635.png)
+![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-docker/docker-base-202204131302482.png)
 
 ## Docker VS 虚拟机
 
@@ -50,11 +50,11 @@ Docker官方网站：`https://www.docker.com/`
   - dockerd
 - DOCKER_HOST支持 unix domain socket、TCP 和 SSH 进行集群切换操作
 
-
+![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-docker/docker-base-202204131306967.png)
 
 **目前大家使用到的基本都是 docker CLI，docker daemon承载了很多的功能，像是拉取镜像或者启动容器等**
 
-![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com//cloudnactive-docker基础-202204121456907.png)
+
 
  ## Docker镜像和容器
 
@@ -71,17 +71,17 @@ docker开源时候的 slogen 就是`Once building run anywhere`，所以 dock
 - 容器只读层：就是从docker容器镜像中拿来的
 - 容器可写层：就是在每一次实例化一个容器的时候，增加一个可写层，可以在上面对资源文件进行调整和修改，但是如果不提交相关的变更，这些修改就是临时的，随着容器的重启和消亡就没有了
 
-![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com//cloudnactive-docker基础-202204121542230.png)
+![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-docker/docker-base-202204131307677.png)
 
 容器镜像的构建是通过dockerfile来完成的，到目前为止，dockerfile已经成为了容器镜像构建的标准；dockerfile中每次执行的命令，对于容器镜像来说就是一层（layer），附加到基础镜像之上
 
 ###### 如何构建操作系统镜像
 
-![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-docker基础-20220413001549.png)
+![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-docker/docker-base-202204131307948.png)
 
 #### 容器镜像的分层
 
-![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com//cloudnactive-docker基础-202204121617893.png)
+![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-docker/docker-base-202204131308891.png)
 
 - 通过不断操作进行叠加
 - 不是所有的操作都会增加镜像的体积
@@ -94,7 +94,7 @@ docker开源时候的 slogen 就是`Once building run anywhere`，所以 dock
 
 - sha256 散列
 
-![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com//cloudnactive-docker基础-202204121708990.png)
+![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-docker/docker-base-202204131308473.png)
 
 容器镜像就是通过一个配置文件，通过每一层的哈希值将每一层组织起来的，哈希值分别对应到了不同的layer，哈希值的产生都使用过sha256进行散列，以上是可以通过保存容器镜像后，解压，然后进行查看
 
@@ -132,4 +132,4 @@ docker开源时候的 slogen 就是`Once building run anywhere`，所以 dock
 
 #### 容器化工具
 
-![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-docker基础-20220413003541.png)
+![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-docker/docker-base-202204131309378.png)
