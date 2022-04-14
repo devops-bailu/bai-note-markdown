@@ -101,7 +101,6 @@ Kubernetes 为你提供：
 是一系列控制器的集合，通过apiserver监控整个集群还有资源的状态，并且确保集群处于预期的工作状态
 
 - Node Controller：节点控制器
-
 - Deployment Controller：pod控制器
 - Service Controller：服务控制器
 - Volume Controller：存储卷控制器
@@ -118,6 +117,40 @@ Kubernetes 为你提供：
 主要功能是接收调度pod到适合的节点上
 预选策略( predict )
 优选策略( priorities )
+
+###### 4. Etcd
+
+集群数据库
+
+###### 5. kubelet
+
+kubelet是一个节点上的主要服务，他周期性的从APIServer接受新的或者修改的pod目标状态并且保证节点上的pod和其容器的正常运行
+还会保证节点会向目标状态迁移，该节点仍然会向Master节点发送宿主机的健康状态。
+简单地说, kubelet的主要功能就是定时从某个地方获取节点上pod的期望状态(运行什么容器、运行的副本数量、网络或者存储如何配置等等) ，并调用对应的容器平台接口达到这个状态
+定时汇报当前节点的状态给apiserver,以供调度的时候使用
+镜像和容器的清理工作，保证节点上镜像不会占满磁盘空间，退出的容器不会占用太多资源
+
+###### 6. kube-proxy
+
+负责宿主机的子网管理，同时也能将服务暴露给外部
+其原理就是在多个隔离的网络中把请求转发给正确的Pod或者容器。
+是K8S在每个节点 上运行网络代理, service资源的载体
+建立了pod网络和集群网络的关系( clusterip >podip )
+负责建立和删除包括更新调度规则、通知apiserver自己的更新,或者从apiserver哪里获取其他kube- proxy的调度规则变化来更新自己的
+
+常用的三种流量调度模式：
+
+- Userspace (废弃)
+
+- Iptables (濒临废弃)（绝大部分公司在用）
+
+- Ipvs(推荐)
+
+  负责建立和删除包括更新调度规则、通知apiserver自己的更新,或者从apiserver哪里获取其他kube- proxy的调度规则变化来更新自己的
+
+## K8s 生产架构
+
+![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-k8s/k8s-base/k8s-base-20220414125256.png)
 
 ## K8s 中服务发现和应用
 
