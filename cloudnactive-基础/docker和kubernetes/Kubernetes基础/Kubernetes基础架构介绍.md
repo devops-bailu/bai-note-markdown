@@ -142,7 +142,10 @@ kubelet是一个节点上的主要服务，他周期性的从APIServer接受新�
 
 - Userspace (废弃)
 
-- Iptables (濒临废弃)（绝大部分公司在用）
+- Iptables (濒临废弃)（但是绝大部分公司在用）
+
+  在大规模集群下众多的iptables规则可维护性差，并且由于iptables是在用户态下，导致性能较差
+
 
 - Ipvs(推荐)
 
