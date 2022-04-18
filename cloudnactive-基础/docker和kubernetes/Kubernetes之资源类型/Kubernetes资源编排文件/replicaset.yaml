@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: demo-rc
+  labels:
+    app: demo-rc
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: demo-rc
+  template:
+    metadata:
+      labels:
+        app: demo-rc
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 8080
