@@ -2,6 +2,8 @@
 
 Kubernetes 中所有的配置都是通过 API 对象的 spec 去设置的，也就是用户通过配置系统的理想状态来改变系统，这是  Kubernetes  重要设计理念之一，即所有的操作都是声明式（Declarative）的而不是命令式（Imperative）的。声明式操作在分布式系统中的好处是稳定，不怕丢操作或运行多次，例如设置副本数为 3 的操作运行多次也还是一个结果，而给副本数加 1 的操作就不是声明式的，运行多次结果就错了
 
+![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-k8s/k8s-base/202204191034404.png)
+
 ## Pod
 
 Pod 的设计理念是支持多个容器在一个 Pod 中共享网络地址和文件系统，可以通过进程间通信和文件共享这种简单高效的方式组合完成服务。Pod 对多容器的支持是 K8 最基础的设计理念
@@ -86,7 +88,7 @@ Job 一般用于数据处理、迁移等一次性任务处理场景，Job 会创
 
 ## Cronjob
 
-CronJob 则就是在Job上加上了时间调度
+CronJob 则就是在Job的基础上加上了时间调度
 
 ## Service
 
@@ -102,25 +104,17 @@ CronJob 则就是在Job上加上了时间调度
 
 ConfigMap 和Secret 是 Kubernetes 系统上两种特殊类型的存储卷，ConfigMap 对象用于为容器中的应用提供配置文件等信息。但是比较敏感的数据，例如密钥、证书等由 Secret 对象来进行配置。它们将相应的配置信息保存于对象中，而后在 Pod 资源上以存储卷的形式挂载并获取相关的配置，以实现配置与镜像文件的解耦
 
+## Persistent Volume 和 Persistent Volume Claim
 
+PV 可以被理解 成 kubernetes 集群中的某个网络存储对应的一块存储，它与 Volume 类似，但是有如下的区别：
 
+- PV 只能是网络存储，不属于任何 Node，但是可以在每个 Node 上访问
 
+- PV不是被定义在pod上，而是独立在pod之外被定义的，意味着 pod 被删除了，PV 仍然存在，这点与 Volume 不同
 
+`PersistentVolume(PV)`是由管理员设置的存储，它是群集的一部分，就像节点是集群中的资源一样，PV也是集群中的资源。PV是Volume之类的卷插件，但具有独立于使用PV的Pod的生命周期。此API对象包含存储实现的细节，即`NFS`、`iSCSl`或特定于云供应商的存储系统或者开源存储系统`CephFS`或者`GlusterFS`
 
-
-
-
-
-
-## Persistent Volume
-
-
-
-
-
-## Persistent Volume Claim
-
-
+`PersistentVolumeClaim(PVC)`是用户存储的请求。它与Pod相似。Pod消耗节点资源，`PVC`消耗`PV`资源，Pod可以请求特定级别的资源（CPU和内存），声明可以请求特定的大小和访问模式（例如，可以以读/写一次或只读多次模式挂载）
 
 
 
