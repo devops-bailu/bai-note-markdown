@@ -4,9 +4,9 @@ metadata:                   #必填，元数据
   name: string              #必填，Pod名称
   namespace: string         #必填，Pod所属的命名空间
   labels:                   #自定义标签
-    - name: string          #自定义标签名字<key: value>
+    name: string          #自定义标签名字<key: value>
   annotations:              #自定义注释列表
-    - name: string
+    name: string
 spec:                       #必填，部署的详细定义
   selector: 
     matchLabels:

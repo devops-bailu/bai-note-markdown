@@ -2,6 +2,8 @@
 
 ## K8s 信息
 
+#### 基础信息
+
 ###### 获取集群版本信息
 
 ```shell
@@ -30,5 +32,12 @@ kubectl api-resources --namespaced=true
 
 # 不属于命名空间的资源对象
 kubectl api-resources --namespaced=false
+```
+
+#### K8s-deployment
+
+```bash
+# 创建 deployment 并且可以通过 --record 记录命令
+kubectl create -f nginx-deployment.yaml --record
 ```
 

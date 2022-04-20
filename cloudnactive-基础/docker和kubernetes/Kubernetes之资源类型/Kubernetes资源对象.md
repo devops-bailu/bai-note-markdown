@@ -25,23 +25,25 @@ Pod 控制器是 Pod 启动的一种模板，用来保证 k8s 中启动的 pod �
 - Job
 - Cronjob
 
-## ReplicationController（不用）
+## ReplicationController（一般不用）
 
 用于确保每个 pod 副本在任一时刻均能满足目标数量，换言之，即它用于保证每个容器或容器组总是运行并可访问；它是上一代的无状态 Pod 应用控制器，建议读者使用新型控制器 Deployment 和 ReplicaSet 来取代它
 
-## ReplicaSet（一般不用）
+## ReplicaSet（一般不用且官方不推荐用）
 
 ReplicaSet 它是用来确保我们有指定数量的 Pod 副本正在运行的 Kubernetes 控制器，意在保证系统当前正在运行的 Pod 数等于期望状态里指定的 Pod 数目
 
 一般来说，Kubernetes建议使用 Deployment 控制器而不是直接使 ReplicaSet，Deployment 是一个管理ReplicaSet 并提供 Pod 声明式更新、应用的版本管理以及许多其他功能的更高级的控制器。所以 Deployment 控制器不直接管理 Pod 对象，而是由 Deployment 管理 ReplicaSet，再由 ReplicaSet 负责管理 Pod 对象
 
-## Deployment
+## Deployment（官方推荐使用）
 
-用于管理无状态的持久化应用，例如 http 服务等；它用于为 Pod 和 ReplicaSet 提供声明式更新，是建构在ReplicaSet 之上的更为高级的控制器
+用于管理无状态的持久化应用，例如 http 服务等；它用于为 Pod 和 ReplicaSet 提供声明式更新，是构建在ReplicaSet 之上的更为高级的控制器
 
 - 定义一组 Pod 期望数量，Controller 会维持 Pod 数量与期望数量一致
 - 配置 Pod 的发布方式，Controller 会按照给定的策略更新 Pod，保证更新过程中不可用 Pod 维持在限定数量范围内
 - 动态扩容/缩容，回滚等
+
+
 
 ## StatefulSet
 
@@ -49,7 +51,7 @@ StatefulSet是为了解决有状态服务的问题（对应 Deployments 和 Repl
 
 - 稳定的持久化存储，即 Pod 重新调度后还是能访问到相同的持久化数据，基于 PVC 来实现
 - 稳定的网络标志，即 Pod 重新调度后其 PodName 和 HostName 不变，基于 Headless Service（即没有Cluster IP 的 Service ）来实现
-- 有序部署，有序扩展，即 Pod 是有顺序的，在部署或者扩展的时候要依据定义的顺序依次依次进行（即从0到N-1，在下一个 Pod 运行之前所有之前的Pod必须都是 Running 和 Ready 状态），基于init containers来实现
+- 有序部署，有序扩展，即 Pod 是有顺序的，在部署或者扩展的时候要依据定义的顺序依次依次进行（即从0到N-1，在下一个 Pod 运行之前所有之前的Pod必须都是 Running 和 Ready 状态），基于 init containers 来实现
 - 有序收缩，有序删除（即从N-1到0）
 
 从上面的应用场景可以发现，StatefulSet由以下几个部分组成：
@@ -58,13 +60,15 @@ StatefulSet是为了解决有状态服务的问题（对应 Deployments 和 Repl
 - 用于创建 PersistentVolumes 的 volumeClaimTemplates
 - 定义具体应用的 StatefulSet
 
-StatefulSet中每个 Pod 的 DNS 格式为 statefulSetName-{0..N-1}.serviceName.namespace.svc.cluster.local，其中-
+StatefulSet中每个 Pod 的 DNS 格式为 statefulSetName-{0..N-1}.serviceName.namespace.svc.cluster.local，其中：
 
 - serviceName 为 Headless Service 的名字
 - 0..N-1为 Pod 所在的序号，从0开始到N-1
 - statefulSetName 为 StatefulSet 的名字
 - namespace 为服务所在的 namespace，Headless Servic 和 StatefulSet 必须在相同的 namespace
 - .cluster.local 为 Cluster Domain
+
+
 
 ## DaemonSet
 
@@ -82,6 +86,8 @@ Daemon Pod 的意义确实是非常重要的，主要是用如下：
 - 存储插件的 Agent 组件，也必须运行在每一个节点上，用来在这个节点上挂载远程存储目录，操作容器的 Volume 目录
 - 监控组件和日志组件，也必须运行在每一个节点上，负责这个节点上的监控信息和日志搜集
 
+
+
 ## Job
 
 Job 一般用于数据处理、迁移等一次性任务处理场景，Job 会创建 Pod 进行作业并确保完成
@@ -93,12 +99,6 @@ CronJob 则就是在Job的基础上加上了时间调度
 ## Service
 
 Kubernetes 中一个应用服务会有一个或多个实例（Pod）,每个实例（Pod）的IP地址由网络插件动态随机分配（随着 pod 的生命周期变化，IP地址会改变），为屏蔽这些后端实例的动态变化和对多实例的负载均衡，引入了Service 这个资源对象
-
-
-
-
-
-
 
 ## ConfigMap 和 Secret
 
@@ -115,14 +115,6 @@ PV 可以被理解 成 kubernetes 集群中的某个网络存储对应的一块�
 `PersistentVolume(PV)`是由管理员设置的存储，它是群集的一部分，就像节点是集群中的资源一样，PV也是集群中的资源。PV是Volume之类的卷插件，但具有独立于使用PV的Pod的生命周期。此API对象包含存储实现的细节，即`NFS`、`iSCSl`或特定于云供应商的存储系统或者开源存储系统`CephFS`或者`GlusterFS`
 
 `PersistentVolumeClaim(PVC)`是用户存储的请求。它与Pod相似。Pod消耗节点资源，`PVC`消耗`PV`资源，Pod可以请求特定级别的资源（CPU和内存），声明可以请求特定的大小和访问模式（例如，可以以读/写一次或只读多次模式挂载）
-
-
-
-
-
-
-
-
 
 ## Namespace
 
