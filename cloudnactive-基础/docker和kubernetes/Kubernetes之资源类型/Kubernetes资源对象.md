@@ -2,7 +2,9 @@
 
 Kubernetes 中所有的配置都是通过 API 对象的 spec 去设置的，也就是用户通过配置系统的理想状态来改变系统，这是  Kubernetes  重要设计理念之一，即所有的操作都是声明式（Declarative）的而不是命令式（Imperative）的。声明式操作在分布式系统中的好处是稳定，不怕丢操作或运行多次，例如设置副本数为 3 的操作运行多次也还是一个结果，而给副本数加 1 的操作就不是声明式的，运行多次结果就错了
 
-![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-k8s/k8s-base/202204191034404.png)
+![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-k8s/k8s-base/k8s-202204241805834.png)
+
+
 
 ## Pod
 
@@ -43,8 +45,6 @@ ReplicaSet 它是用来确保我们有指定数量的 Pod 副本正在运行的 
 - 配置 Pod 的发布方式，Controller 会按照给定的策略更新 Pod，保证更新过程中不可用 Pod 维持在限定数量范围内
 - 动态扩容/缩容，回滚等
 
-
-
 ## StatefulSet
 
 StatefulSet是为了解决有状态服务的问题（对应 Deployments 和 ReplicaSets 是为无状态服务而设计），其应用场景包括：
@@ -68,8 +68,6 @@ StatefulSet中每个 Pod 的 DNS 格式为 statefulSetName-{0..N-1}.serviceName.
 - namespace 为服务所在的 namespace，Headless Servic 和 StatefulSet 必须在相同的 namespace
 - .cluster.local 为 Cluster Domain
 
-
-
 ## DaemonSet
 
 DaemonSet 的主要作用，是在 Kubernetes 集群里，运行一个 Daemon Pod。 DaemonSet 只管理 Pod 对象，然后通过 nodeAffinity 和 Toleration 这两个调度器的小功能，保证了每个节点上有且只有一个 Pod。
@@ -85,8 +83,6 @@ Daemon Pod 的意义确实是非常重要的，主要是用如下：
 - 网络插件的 Agent 组件，都必须运行在每一个节点上，用来处理这个节点上的容器网络
 - 存储插件的 Agent 组件，也必须运行在每一个节点上，用来在这个节点上挂载远程存储目录，操作容器的 Volume 目录
 - 监控组件和日志组件，也必须运行在每一个节点上，负责这个节点上的监控信息和日志搜集
-
-
 
 ## Job
 
