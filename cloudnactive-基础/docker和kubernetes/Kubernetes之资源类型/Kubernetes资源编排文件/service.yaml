@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: servicename
+  labels:
+    name: servicename
+spec:
+  type: NodePort # Service有四种type: ClusterIP(默认）、NodePort、LoadBalancer、ExternalName. 其中NodePort和LoadBalancer两类型的Services可以对外提供服务
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 8080 #port和nodePort都是service的端口，前者暴露给k8s集群内部服务访问，后者暴露给k8s集群外部流量访问
+                   #从上两个端口过来的数据都需要经过反向代理kube-proxy，流入后端pod的targetPort上，最后到达pod内的容器
+    name: http
+    protocol: TCP
+  selector:
+    k8s-app: apache  

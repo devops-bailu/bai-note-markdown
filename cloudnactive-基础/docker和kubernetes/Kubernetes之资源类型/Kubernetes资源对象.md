@@ -100,6 +100,188 @@ Kubernetes 中一个应用服务会有一个或多个实例（Pod）,每个实�
 
 ConfigMap 和Secret 是 Kubernetes 系统上两种特殊类型的存储卷，ConfigMap 对象用于为容器中的应用提供配置文件等信息。但是比较敏感的数据，例如密钥、证书等由 Secret 对象来进行配置。它们将相应的配置信息保存于对象中，而后在 Pod 资源上以存储卷的形式挂载并获取相关的配置，以实现配置与镜像文件的解耦
 
+#### ConfigMap 创建
+
+1. 命令行创建
+
+```bash
+$ kubectl create configmap pkslow-literal \
+--from-literal=pkslow.name=Larry \
+--from-literal=pkslow.age=18 \
+--from-literal=pkslow.webSite=www.pkslow.com 
+```
+
+```yaml
+apiVersion: v1
+data:
+  pkslow.age: "18"
+  pkslow.name: Larry
+  pkslow.webSite: www.pkslow.com
+kind: ConfigMap
+metadata:
+  name: pkslow-literal
+  namespace: default
+```
+
+2. 从文件创建
+
+配置文件 application1.yaml 和 application2.yaml
+
+```yaml
+server:
+  port: 8080
+pkslow:
+  name: Larry
+  age: 18
+  webSite: www.pkslow.com
+```
+
+```yaml
+server:
+  port: 8080
+pkslow:
+  name: LarryDpk
+  age: 20
+  webSite: https://www.pkslow.com
+```
+
+```bash
+kubectl create configmap pkslow-file \
+--from-file=application.yaml \
+--from-file=application-uat.yaml
+```
+
+```yaml
+apiVersion: v1
+data:
+  application-uat.yaml: |-
+    server:
+      port: 8080
+    pkslow:
+      name: LarryDpk
+      age: 20
+      webSite: https://www.pkslow.com
+  application.yaml: |-
+    server:
+      port: 8080
+    pkslow:
+      name: Larry
+      age: 18
+      webSite: www.pkslow.com
+kind: ConfigMap
+metadata:
+  name: pkslow-file
+  namespace: default
+```
+
+2. 从目录创建
+3. 自定义 yaml 创建
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pkslow-yaml
+data:
+  PKSLOW_AGE: "18"
+  PKSLOW_NAME: Larry
+  PKSLOW_WEBSITE: www.pkslow.com
+  application1.yaml: |-
+    server:
+      port: 8080
+    pkslow:
+      name: LarryDpk
+      age: 20
+      webSite: https://www.pkslow.com
+  application2.yaml: |-
+    server:
+      port: 8080
+    pkslow:
+      name: Larry
+      age: 18
+      webSite: www.pkslow.com
+```
+
+#### Secret 创建和使用
+
+Secret 有三种类型：
+
+1. Opaque：base64 编码格式的 Secret，用来存储密码、密钥等；但数据也可以通过base64 –decode解码得到原始数据，所以加密性很弱
+
+2. kubernetes.io/dockerconfigjson：用来存储私有docker registry的认证信息
+
+3. kubernetes.io/service-account-token：用于被serviceaccount引用，serviceaccout 创建时Kubernetes会默认创建对应的secret。Pod如果使用了serviceaccount，对应的secret会自动挂载到Pod目录
+
+   /run/secrets/kubernetes.io/serviceaccount中
+
+###### 创建 Opaque Secret
+
+```shell
+$ echo -n "admin" | base64
+YWRtaW4=
+$ echo -n "admin321" | base64
+YWRtaW4zMjE=
+```
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysecret
+type: Opaque
+data:
+  username: YWRtaW4=
+  password: YWRtaW4zMjE=
+```
+
+###### 使用 Secret
+
+1. Volume 挂载
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secret2-pod
+spec:
+  containers:
+  - name: secret2
+    image: busybox
+    command: ["/bin/sh", "-c", "ls /etc/secrets"]
+    volumeMounts:
+    - name: secrets
+      mountPath: /etc/secrets
+  volumes:
+  - name: secrets
+    secret:
+      secretName: mysecret
+```
+
+2. 通过环境变量的形式
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secret1-pod
+spec:
+  containers:
+  - name: secret1
+    image: busybox
+    command: [ "/bin/sh", "-c", "env" ]
+    env:
+    - name: USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: mysecret
+          key: username
+    - name: PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: mysecret
+          key: password
+```
+
 ## Persistent Volume 和 Persistent Volume Claim
 
 PV 可以被理解 成 kubernetes 集群中的某个网络存储对应的一块存储，它与 Volume 类似，但是有如下的区别：

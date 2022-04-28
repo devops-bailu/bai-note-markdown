@@ -28,7 +28,16 @@ Scheduler 提供的调度流程分为预选（Predicates）和优选（Prioritie
 5. 对应节点的 kubelet 从 api-server 获取需要创建的 pod 信息，调用 CNI 接口创建 pod 网络，调用 CRI 接口去启动容器，调用 CSI 进行存储卷的挂载
 6. 以上全部完成以后，pod 创建成功，容器内业务进行正常启动以后，pod 运行成功
 
+## 节点亲和性
 
+节点亲和性语法支持以下运算符：In，NotIn，Exists，DoesNotExist，Gt，Lt。可以使用NotIn和DoesNotExist实现节点的反亲和行为。
+运算符关系：
+In：label的值在某个列表中
+NotIn：label的值不在某个列表中
+Gt：label的值大于某个值
+Lt：label的值小于某个值
+Exists：某个label存在
+DoesNotExist：某个label不存在
 
 
 

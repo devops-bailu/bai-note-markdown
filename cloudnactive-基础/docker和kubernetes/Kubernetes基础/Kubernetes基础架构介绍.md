@@ -115,8 +115,9 @@ Kubernetes 为你提供：
 调度器其实为kubernetes中运行的Pod选择部署的Worker节点
 它会根据用户的需要选择最能满足请求的节点来运行Pod，它会在每次需要调度Pod时执行
 主要功能是接收调度pod到适合的节点上
-预选策略( predict )
-优选策略( priorities )
+
+- 预选策略( predict )
+- 优选策略( priorities )
 
 ###### 4. Etcd
 
@@ -155,9 +156,19 @@ kubelet是一个节点上的主要服务，他周期性的从APIServer接受新�
 
 ![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-k8s/k8s-base/k8s-base-20220414125256.png)
 
+## K8s 集群规模
 
+#### K8s 集群规模
 
+`https://kubernetes.io/docs/setup/best-practices/cluster-large/`
 
+![](https://bai-images-1258524516.cos.ap-beijing.myqcloud.com/cloudnactive-k8s/k8s-base/k8s-base-20220427162053.png)
 
+#### Etcd 规模
 
+`https://etcd.io/docs/v3.5/dev-guide/limit/`
+
+Etcd 建议的最大容量：8G
+
+Etcd 默认容量：2G
 
